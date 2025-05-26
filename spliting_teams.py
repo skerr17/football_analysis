@@ -1,15 +1,6 @@
 # in this program we will split define a function that will 
 # isolate a given team into its own dataframe
 
-# import the pandas library
-import pandas as pd
-# import the os library
-import os
-
-# import the kagglehub library
-# This library is used to download datasets from Kaggle
-import kagglehub
-
 # import impport_dataset to get the dataframe of football results
 from import_dataset import football_results_df
 
@@ -69,16 +60,14 @@ def stats_of_team(team_results_df, team_names):
 
 
 # Example usage
-# the number of matches played by the team Italy, Spain, and Germany
-team_names_example = ['Italy', 'Spain', 'Germany']
-team_results_df  = isolate_teams(team_names_example)
+if __name__ == "__main__":
+    # the number of matches played by the team Italy, Spain, and Germany
+    team_names_example = ['Italy', 'Spain', 'Germany']
+    team_results_df  = isolate_teams(team_names_example)
 
-# get the number of matches played, won, lost, and drawn by the team
-number_of_matches, wins, losses, draws = stats_of_team(team_results_df, team_names_example)
-print(f"Number of matches played by {team_names_example}: {number_of_matches}")
-print(f"Wins: {wins}")
-print(f"Losses: {losses}")
-print(f"Draws: {draws}")
-
-
-
+    # get the number of matches played, won, lost, and drawn by the team
+    number_of_matches, wins, losses, draws = stats_of_team(team_results_df, team_names_example)
+    print(f"Number of matches played by {team_names_example}: {number_of_matches}")
+    print(f"Wins: {wins}")
+    print(f"Losses: {losses}")
+    print(f"Draws: {draws}")

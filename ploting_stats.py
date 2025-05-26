@@ -1,7 +1,6 @@
 # in this program we will plot the stats of the football teams
 
 import matplotlib.pyplot as plt
-import pandas as pd
 from import_dataset import football_results_df
 from spliting_teams import isolate_teams, stats_of_team
 
@@ -20,20 +19,28 @@ def plot_team_stats(team_names):
     # Unpack the stats tuple
     number_of_matches, wins, losses, draws = stats
     # Prepare data for plotting
-    categories = ['Matches Played', 'Wins', 'Losses', 'Draws']
-    values = [number_of_matches, wins, losses, draws]
+    categories = ['Wins', 'Losses', 'Draws']
+    values = [wins, losses, draws]
     
     # Create a bar plot
     plt.figure(figsize=(10, 6))
     plt.bar(categories, values, color=['blue', 'green', 'red', 'orange'])
-    plt.title(f'Stats for Team(s): {", ".join(team_names)}')
+    plt.title(f'Stats for Team(s): {", ".join(team_names)} , Matches Played: {number_of_matches}')
     plt.xlabel('Categories')
     plt.ylabel('Count')
     plt.ylim(0, max(values) + 1)
     
     # Save the plot to a file instead of showing it (for headless environments)
-    plt.savefig("team_stats.png")
-    print("Plot saved as team_stats.png")
+    plt.savefig(f"{team_names}_team_stats_bar_chart.png")
+    print(f"Plot saved as {team_names}_team_stats_bar_chart.png")
+
+    # create pie chart
+    plt.figure(figsize=(8, 8))
+    plt.pie(values, labels=categories, autopct='%1.1f%%', startangle=140, colors=['blue', 'green', 'red', 'orange'])
+    plt.title(f'Stats for Team(s): {", ".join(team_names)}')
+    # Save the pie chart to a file
+    plt.savefig(f"{team_names}_team_stats_pie_chart.png")
+    print(f"Pie chart saved as {team_names}_team_stats_pie_chart.png")
 
 
 # Example usage
