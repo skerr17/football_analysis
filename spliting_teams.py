@@ -13,54 +13,54 @@ import kagglehub
 # import impport_dataset to get the dataframe of football results
 from import_dataset import football_results_df
 
+# Note documentation for .isin() method https://www.geeksforgeeks.org/python-pandas-dataframe-isin/
 
 
-def isolate_team(team_name):
+def isolate_teams(team_names):
     """
-    This function takes a team name as input and returns a dataframe,
-    containing only the matches played by that team.
+    This function takes a list of team names as input and returns a dataframe,
+    containing only the matches played by those team(s).
     """
+
+    # covert the input if it is a string to a list
+    if isinstance(team_names, str):
+        team_names = [team_names]
     # filter the dataframe to get only the matches played by the team
     team_results_df = football_results_df[
-        (football_results_df['home_team']==team_name)  | 
-        (football_results_df['away_team']==team_name)
+        (football_results_df['home_team'].isin(team_names))  | 
+        (football_results_df['away_team'].isin(team_names))
         ]
     return team_results_df
 
-def stats_of_team(team_results_df, team_name):
+def stats_of_team(team_results_df, team_names):
     """
     This function takes a dataframe as input and returns the number of matches played, won, lost, and drawn by the team(s).
     """
+    # convert the input if it is a string to a list
+    if isinstance(team_names, str):
+        team_names = [team_names]
+
     # number of matches played by the team
     number_of_matches = len(team_results_df)
 
     # number of games won by the team
     wins = len(team_results_df[
-        (team_results_df['home_team']==team_name) & 
-        (team_results_df['home_score'] > team_results_df['away_score'])
-        ]) + len(team_results_df[
-        (team_results_df['away_team']==team_name) & 
-        (team_results_df['away_score'] > team_results_df['home_score'])
-        ])
-    
-        # number of games lost by the team
+        ((team_results_df['home_team'].isin(team_names)) & (team_results_df['home_score'] > team_results_df['away_score'])) |
+        ((team_results_df['away_team'].isin(team_names)) & (team_results_df['away_score'] > team_results_df['home_score']))
+    ])
+
+    # number of games lost by the team
     losses = len(team_results_df[
-        (team_results_df['home_team']==team_name) & 
-        (team_results_df['home_score'] < team_results_df['away_score'])
-        ]) + len(team_results_df[
-        (team_results_df['away_team']==team_name) & 
-        (team_results_df['away_score'] < team_results_df['home_score'])
-        ])
-    
+        ((team_results_df['home_team'].isin(team_names)) & (team_results_df['home_score'] < team_results_df['away_score'])) |
+        ((team_results_df['away_team'].isin(team_names)) & (team_results_df['away_score'] < team_results_df['home_score']))
+    ])
+
     # number of games drawn by the team
     draws = len(team_results_df[
-        (team_results_df[('home_team')]==team_name) & 
-        (team_results_df[('home_score')] == team_results_df[('away_score')])
-        ]) + len(team_results_df[
-        (team_results_df[('away_team')]==team_name) & 
-        (team_results_df[('away_score')] == team_results_df[('home_score')])
-        ])
-    
+        (team_results_df['home_score'] == team_results_df['away_score']) &
+        ((team_results_df['home_team'].isin(team_names)) | (team_results_df['away_team'].isin(team_names)))
+    ])
+
     return number_of_matches, wins, losses, draws
 
 
@@ -69,26 +69,16 @@ def stats_of_team(team_results_df, team_name):
 
 
 # Example usage
-# the number of matches played by the Republic of Ireland
-team_results_df  = isolate_team('Italy')
-print(team_results_df.head())
+# the number of matches played by the team Italy, Spain, and Germany
+team_names_example = ['Italy', 'Spain', 'Germany']
+team_results_df  = isolate_teams(team_names_example)
 
-"""
-ire_football_results_df = football_results_df[
-    (football_results_df[('home_team')]=='Republic of Ireland')  | 
-    (football_results_df[('away_team')]=='Republic of Ireland')
-    ]
-print(ire_football_results_df.head())
+# get the number of matches played, won, lost, and drawn by the team
+number_of_matches, wins, losses, draws = stats_of_team(team_results_df, team_names_example)
+print(f"Number of matches played by {team_names_example}: {number_of_matches}")
+print(f"Wins: {wins}")
+print(f"Losses: {losses}")
+print(f"Draws: {draws}")
 
-print('The number of matches played by the Republic of Ireland is:', len(ire_football_results_df))
 
-# the number of matches Ireland have won 
-ire_wins = len(ire_football_results_df[
-    (ire_football_results_df[('home_team')]=='Republic of Ireland') & 
-    (ire_football_results_df[('home_score')] > ire_football_results_df[('away_score')])
-    ]) + len(ire_football_results_df[
-    (ire_football_results_df[('away_team')]=='Republic of Ireland') & 
-    (ire_football_results_df[('away_score')] > ire_football_results_df[('home_score')])
-    ])
-print('The number of matches won by the Republic of Ireland is:', ire_wins)
-"""
+
